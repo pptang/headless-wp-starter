@@ -43,8 +43,8 @@ class Post extends Component {
 
     return (
       <Layout>
-        <Menu menu={headerMenu} />
-        {/* <NavBar /> */}
+        {/* <Menu menu={headerMenu} /> */}
+        <NavBar />
         <Article post={post} />
       </Layout>
     );

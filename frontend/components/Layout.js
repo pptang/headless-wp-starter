@@ -5,10 +5,15 @@ import Header from './Header';
 const Layout = props => {
   const { children } = props;
   return (
-    <div>
+    <div className="layout">
       <Header />
       {children}
       <Footer />
+      <style jsx>{`
+        .layout {
+          padding-top: 100px;
+        }
+      `}</style>
     </div>
   );
 };
