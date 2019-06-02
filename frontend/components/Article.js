@@ -38,6 +38,7 @@ const Article = ({ post: { title, content, date, author } }) => (
         }
         .title {
           color: ${titleColor};
+          font-weight: bold;
           font-size: 3.6rem;
           margin-bottom: 10px;
         }
@@ -49,6 +50,7 @@ const Article = ({ post: { title, content, date, author } }) => (
         }
         .content {
           font-size: 1.4rem;
+          line-height: 2;
           margin: 0 auto 10px auto;
           max-width: 70%;
         }

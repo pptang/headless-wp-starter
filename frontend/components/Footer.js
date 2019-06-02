@@ -11,6 +11,7 @@ const Footer = () => (
           display: flex;
           justify-content: center;
           background-color: ${backgroundColor};
+          margin-top: 100px;
           padding-top: 20px;
           padding-bottom: 20px;
         }

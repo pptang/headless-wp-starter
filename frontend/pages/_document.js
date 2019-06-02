@@ -16,10 +16,12 @@ class MyDocument extends Document {
         <Head>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <meta charSet="utf-8" />
+          <link rel="stylesheet" type="text/css" href="/static/css/reset.css" />
           <style>{`
             html {
               font-size: 62.5%;
             }
+
           `}</style>
         </Head>
         <body className="custom_class">
