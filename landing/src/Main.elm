@@ -1,15 +1,19 @@
 module Main exposing (init, view)
 
+-- import Browser exposing (Document)
+
 import Asset
-import Browser exposing (Document)
-import Browser.Navigation
-import Html exposing (Html, a, article, aside, br, button, div, em, figure, footer, h1, h2, h3, h4, header, img, li, nav, p, section, span, text, ul)
+import Browser
+import Browser.Navigation as Nav
+import Html exposing (Html, a, article, aside, b, br, button, div, em, figure, footer, h1, h2, h3, h4, header, img, li, nav, p, section, span, text, ul)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Http
 import Json.Decode exposing (Decoder, field, int, list, map2, map3, map4, map5, map6, map7, map8, string)
 import String exposing (append)
 import Time
+import Url
+import Url.Parser exposing (Parser, map, oneOf, parse, s, top)
 
 
 
@@ -32,6 +36,8 @@ type alias Model =
     , faqList : List Faq
     , errorMsg : Maybe Http.Error
     , topIndex : Int
+    , url : Url.Url
+    , key : Nav.Key
     }
 
 
@@ -124,14 +130,15 @@ type Msg
     | GotStoryList (Result Http.Error (List Story))
     | GotFaqList (Result Http.Error (List Faq))
     | GotFundRaiseStats (Result Http.Error FundRaiseStats)
-    | LinkToUrl String
     | SelectTeamMember Int
     | DotClick Int
     | SwitchTopImage Time.Posix
+    | LinkClicked Browser.UrlRequest
+    | UrlChanged Url.Url
 
 
-init : () -> ( Model, Cmd Msg )
-init _ =
+init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
+init flags url key =
     ( { navBarClassNames = []
       , serviceContentList = []
       , serviceDetailList = []
@@ -147,6 +154,8 @@ init _ =
       , faqList = []
       , errorMsg = Nothing
       , topIndex = 1
+      , key = key
+      , url = url
       }
     , Cmd.batch
         [ Http.get
@@ -302,6 +311,17 @@ update msg model =
             round (toFloat (List.length model.successStoryList) / 3) + 1
     in
     case msg of
+        LinkClicked urlRequest ->
+            case urlRequest of
+                Browser.Internal url ->
+                    ( model, Nav.pushUrl model.key (Url.toString url) )
+
+                Browser.External href ->
+                    ( model, Nav.load href )
+
+        UrlChanged url ->
+            ( { model | url = url }, Cmd.none )
+
         TOGGLE ->
             case List.length model.navBarClassNames of
                 0 ->
@@ -402,9 +422,6 @@ update msg model =
                 Err err ->
                     ( { model | errorMsg = Just err }, Cmd.none )
 
-        LinkToUrl link ->
-            ( model, Browser.Navigation.load link )
-
         SelectTeamMember index ->
             ( { model | selectedTeamMemberIndex = index }, Cmd.none )
 
@@ -466,7 +483,7 @@ viewHeader model =
                     ]
                 ]
             , div [ class "nav-link-wrapper" ]
-                [ div [ class "lang-toggle" ] [ a [ class "selected", href "#" ] [ text "TW" ], a [ href "#" ] [ text "JP" ] ]
+                [ div [ class "lang-toggle" ] [ a [ class "selected", href "/" ] [ text "TW" ], a [ href "/jp" ] [ text "JP" ] ]
                 , div [ class "nav-link" ]
                     [ a [ class "consult-btn", href "https://japaninsider.typeform.com/to/yvsVAD", target "_blank" ] [ text "免費諮詢" ]
                     , a [ href "#service" ] [ text "服務內容" ]
@@ -934,22 +951,54 @@ viewFooter =
         ]
 
 
-view : Model -> Document Msg
+type Route
+    = Home
+    | JpHome
+    | NotFound
+
+
+route : Parser (Route -> a) a
+route =
+    oneOf
+        [ map Home top
+        , map JpHome (s "jp")
+        ]
+
+
+toRoute : String -> Route
+toRoute string =
+    case Url.fromString string of
+        Nothing ->
+            NotFound
+
+        Just url ->
+            Maybe.withDefault NotFound (parse route url)
+
+
+view : Model -> Browser.Document Msg
 view model =
     { title = "日本インサイド"
     , body =
-        [ viewHeader model
+        case toRoute (Url.toString model.url) of
+            Home ->
+                [ viewHeader model
 
-        -- , viewMailBtn
-        , viewSectionTop model
-        , viewSectionIntroduction model
-        , viewSectionService model
-        , viewSectionFaq model
-        , viewSectionArticle model
-        , viewSectionEnterpriseRegister
-        , viewSectionTeam
-        , viewFooter
-        ]
+                -- , viewMailBtn
+                , viewSectionTop model
+                , viewSectionIntroduction model
+                , viewSectionService model
+                , viewSectionFaq model
+                , viewSectionArticle model
+                , viewSectionEnterpriseRegister
+                , viewSectionTeam
+                , viewFooter
+                ]
+
+            JpHome ->
+                [ text (Url.toString model.url) ]
+
+            _ ->
+                [ text "Something WRong" ]
     }
 
 
@@ -959,9 +1008,11 @@ view model =
 
 main : Program () Model Msg
 main =
-    Browser.document
+    Browser.application
         { init = init
         , view = view
         , subscriptions = subscriptions
         , update = update
+        , onUrlChange = UrlChanged
+        , onUrlRequest = LinkClicked
         }
