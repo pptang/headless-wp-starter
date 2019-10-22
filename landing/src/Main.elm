@@ -465,18 +465,21 @@ viewHeader model =
                         []
                     ]
                 ]
-            , div [ class "nav-link" ]
-                [ a [ class "consult-btn", href "https://japaninsider.typeform.com/to/yvsVAD", target "_blank" ] [ text "免費諮詢" ]
-                , a [ href "#service" ] [ text "服務內容" ]
-                , a [ href "#faq" ] [ text "常見問題" ]
-                , a [ href "#article" ] [ text "精選文章" ]
-                , a [ href "https://www.facebook.com/japaninsiders/", class "fb-logo" ]
-                    [ figure []
-                        [ img
-                            [ Asset.src Asset.fb
-                            , alt "fb logo"
+            , div [ class "nav-link-wrapper" ]
+                [ div [ class "lang-toggle" ] [ a [ class "selected", href "#" ] [ text "TW" ], a [ href "#" ] [ text "JP" ] ]
+                , div [ class "nav-link" ]
+                    [ a [ class "consult-btn", href "https://japaninsider.typeform.com/to/yvsVAD", target "_blank" ] [ text "免費諮詢" ]
+                    , a [ href "#service" ] [ text "服務內容" ]
+                    , a [ href "#faq" ] [ text "常見問題" ]
+                    , a [ href "#article" ] [ text "精選文章" ]
+                    , a [ href "https://www.facebook.com/japaninsiders/", class "fb-logo" ]
+                        [ figure []
+                            [ img
+                                [ Asset.src Asset.fb
+                                , alt "fb logo"
+                                ]
+                                []
                             ]
-                            []
                         ]
                     ]
                 ]

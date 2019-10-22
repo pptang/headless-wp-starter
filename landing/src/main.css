@@ -54,6 +54,43 @@ nav {
   width: 245px;
 }
 
+.nav-link-wrapper {
+  position: relative;
+}
+
+.lang-toggle {
+  position: fixed;
+  width: 83px;
+  height: 24px;
+  top: 0;
+  right: 239px;
+  background: #01403A;
+  border-bottom-left-radius: 7px;
+  border-bottom-right-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lang-toggle a {
+  display: inline-block;
+  font-size: 1.4rem;
+  text-decoration: none;
+  color: #C4C4C4;
+}
+
+.lang-toggle a:nth-child(1) {
+  margin-right: 0.6rem;
+}
+.lang-toggle a:nth-child(2) {
+  margin-left: 0.6rem;
+}
+.lang-toggle a:hover,
+.lang-toggle a:focus,
+.lang-toggle a.selected {
+  color: #ffffff;
+}
+
 .nav-link {
   display: flex;
   align-items: center;
