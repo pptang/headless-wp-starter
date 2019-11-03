@@ -323,6 +323,7 @@ section {
 
 .jp-top-description {
   width: 612px;
+  max-width: 100%;
   height: 185px;
   background: rgba(18, 20, 26, 0.6);
   padding: 24px 20px;
@@ -377,6 +378,7 @@ section {
   font-size: 1.6rem;
   line-height: 28px;
   width: 466px;
+  max-width: 100%;
 }
 
 .crd-introduction-description > p:first-child {
@@ -896,6 +898,7 @@ section {
 .jp-spirit-content-wrapper {
   position: absolute;
   width: 804px;
+  max-width: 100%;
   height: 360px;
   top: 50%;
   left: 50%;
@@ -918,6 +921,7 @@ section {
   color: #636363;
   margin-bottom: 20px;
   line-height: 28px;
+  text-align: left;
 }
 
 .jp-summary {
@@ -952,6 +956,7 @@ section {
 .jp-summary-content-wrapper {
   position: absolute;
   width: 796px;
+  max-width: 100%;
   height: 248px;
   top: 50%;
   left: 50%;
@@ -976,6 +981,7 @@ section {
 .jp-summary-content-wrapper span {
   display: inline-block;
   width: 594px;
+  max-width: 100%;
   margin-left: 19px;
   font-size: 1.6rem;
 }
@@ -1518,6 +1524,58 @@ li > img {
 
   footer {
     padding-left: 34px;
+  }
+
+  .jp-spirit {
+    background-image: none;
+    padding-top: 0;
+    height: auto;
+  }
+
+  .jp-summary {
+    background-image: none;
+    padding-top: 0;
+    height: auto;
+  }
+
+  .jp-summary:after {
+    display: none;
+  }
+
+  .jp-spirit-content-wrapper,
+  .jp-summary-content-wrapper {
+    position: relative;
+    top: 0;
+    left: 0;
+    transform: none;
+  }
+
+  .jp-top-description,
+  .jp-spirit-content-wrapper,
+  .jp-summary-content-wrapper {
+    height: auto;
+  }
+
+  .jp-summary-content-wrapper > p {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  .jp-summary-content-wrapper b,
+  .jp-summary-content-wrapper span {
+    text-align: center;
+    margin-left: 0;
+    line-height: 25px;
+  }
+
+  .jp-service-content-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .lang-toggle {
+    right: 0;
   }
 }
 
