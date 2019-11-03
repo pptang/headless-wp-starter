@@ -32,6 +32,7 @@ type alias Model =
     , teamMemberList : List TeamMember
     , selectedTeamMemberIndex : Int
     , articleList : List Article
+    , benefitList : List Benefit
     , fundRaiseStats : FundRaiseStats
     , successStoryList : List Story
     , faqList : List Faq
@@ -102,6 +103,10 @@ type alias Faq =
     }
 
 
+type alias Benefit =
+    { imgSrc : String, title : String, description : String }
+
+
 serviceCarouselLength =
     2
 
@@ -132,6 +137,7 @@ type Msg
     | GotStoryList (Result Http.Error (List Story))
     | GotFaqList (Result Http.Error (List Faq))
     | GotFundRaiseStats (Result Http.Error FundRaiseStats)
+    | GotBenefitList (Result Http.Error (List Benefit))
     | SelectTeamMember Int
     | DotClick Int
     | SwitchTopImage Time.Posix
@@ -152,6 +158,7 @@ init flags url key =
       , teamMemberList = []
       , selectedTeamMemberIndex = -1
       , articleList = []
+      , benefitList = []
       , fundRaiseStats = { successCaseNum = 0, successRate = 0, totalFund = "", funders = 0 }
       , successStoryList = []
       , faqList = []
@@ -200,6 +207,10 @@ init flags url key =
         , Http.get
             { url = "%PUBLIC_URL%/assets/data/fund_raise_stats.json"
             , expect = Http.expectJson GotFundRaiseStats decodeFundRaiseStats
+            }
+        , Http.get
+            { url = "%PUBLIC_URL%/assets/data/benefit.json"
+            , expect = Http.expectJson GotBenefitList decodeBenefitList
             }
         ]
     )
@@ -305,6 +316,19 @@ decodeFundRaiseStats =
         (field "successRate" int)
         (field "totalFund" string)
         (field "funders" int)
+
+
+decodeBenefitList : Decoder (List Benefit)
+decodeBenefitList =
+    field "data" (list benefitDecoder)
+
+
+benefitDecoder : Decoder Benefit
+benefitDecoder =
+    map3 Benefit
+        (field "imgSrc" string)
+        (field "title" string)
+        (field "description" string)
 
 
 
@@ -437,6 +461,14 @@ update msg model =
                 Err err ->
                     ( { model | errorMsg = Just err }, Cmd.none )
 
+        GotBenefitList result ->
+            case result of
+                Ok benefitList ->
+                    ( { model | benefitList = benefitList }, Cmd.none )
+
+                Err err ->
+                    ( { model | errorMsg = Just err }, Cmd.none )
+
         SelectTeamMember index ->
             ( { model | selectedTeamMemberIndex = index }, Cmd.none )
 
@@ -487,7 +519,7 @@ viewHeader : Model -> Html Msg
 viewHeader model =
     header []
         [ nav [ class (String.join " " model.navBarClassNames) ]
-            [ a [ id "logo-link", href "#top" ]
+            [ a [ id "logo-link", href "/#top" ]
                 [ figure []
                     [ img
                         [ Asset.src Asset.logo
@@ -501,9 +533,10 @@ viewHeader model =
                 [ div [ class "lang-toggle" ] [ a [ class "selected", href "/" ] [ text "TW" ], a [ href "/jp" ] [ text "JP" ] ]
                 , div [ class "nav-link" ]
                     [ a [ class "consult-btn", href "https://japaninsider.typeform.com/to/yvsVAD", target "_blank" ] [ text "免費諮詢" ]
-                    , a [ href "#service" ] [ text "服務內容" ]
-                    , a [ href "#faq" ] [ text "常見問題" ]
-                    , a [ href "#article" ] [ text "精選文章" ]
+                    , a [ href "/#service" ] [ text "服務內容" ]
+                    , a [ href "/cross-border-sourcing" ] [ text "跨境外包" ]
+                    , a [ href "/#faq" ] [ text "常見問題" ]
+                    , a [ href "/#article" ] [ text "精選文章" ]
                     , a [ href "https://www.facebook.com/japaninsiders/", class "fb-logo" ]
                         [ figure []
                             [ img
@@ -593,6 +626,46 @@ viewJpTop =
             [ h2 [] [ text "Bridge Cross-Border Connection" ]
             , h1 [] [ text "台湾企業の日本進出する新モデルを創出" ]
             ]
+        ]
+
+
+viewCrossBorderTop : Html Msg
+viewCrossBorderTop =
+    section [ class "cross-border-top" ]
+        [ div [ class "cross-border-hero-description" ]
+            [ h2 [] [ text "COMING SOON!" ]
+            , h1 [ class "top-title" ] [ text "尋找在日的台灣人才，", br [] [], text "協助你拓展日本市場！" ]
+            , p []
+                [ span [] [ text "第一個台日線上外包平台" ]
+                ]
+            ]
+        , figure []
+            [ img [ class "cross-border-hero-img", Asset.src Asset.talentMatch, alt "hero image" ] [] ]
+        ]
+
+
+viewCrossBorderRegister : Html Msg
+viewCrossBorderRegister =
+    div [ class "cross-border-register" ] [ p [] [ text "預先登錄，搶先接收平台上線通知" ], a [ class "consult-btn", href "https://japaninsider.typeform.com/to/yvsVAD", target "_blank" ] [ text "登錄" ] ]
+
+
+viewCrossBorderBenefit : Model -> Html Msg
+viewCrossBorderBenefit { benefitList } =
+    section [ class "cross-border-benefit-section" ]
+        [ div [ class "cross-border-benefit-content" ] [ h2 [] [ text "採用「跨境外包」進入日本市場的好處" ], div [ class "cross-border-benefit-list" ] (List.map viewBenefitItem (List.take 3 benefitList)) ]
+        ]
+
+
+viewBenefitItem : Benefit -> Html Msg
+viewBenefitItem { title, imgSrc, description } =
+    let
+        imgSrcPath =
+            append assetPath imgSrc
+    in
+    article [ class "benefit-item" ]
+        [ img [ class "benefit-item-image", src imgSrcPath, alt title ] []
+        , h2 [ class "benefit-item-title" ] [ text title ]
+        , p [ class "benefit-item-description" ] [ text description ]
         ]
 
 
@@ -1095,6 +1168,7 @@ viewJpFooter =
 type Route
     = Home
     | JpHome
+    | CrossBorder
     | NotFound
 
 
@@ -1103,6 +1177,7 @@ route =
     oneOf
         [ map Home top
         , map JpHome (s "jp")
+        , map CrossBorder (s "cross-border-sourcing")
         ]
 
 
@@ -1144,6 +1219,14 @@ view model =
                 , viewJpSectionSpirit
                 , viewJpSectionSummary
                 , viewJpFooter
+                ]
+
+            CrossBorder ->
+                [ viewHeader model
+                , viewCrossBorderTop
+                , viewCrossBorderRegister
+                , viewCrossBorderBenefit model
+                , viewFooter
                 ]
 
             _ ->
