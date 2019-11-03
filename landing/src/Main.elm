@@ -6,7 +6,7 @@ import Asset
 import Browser
 import Browser.Navigation as Nav
 import Html exposing (Html, a, article, aside, b, br, button, div, em, figure, footer, form, h1, h2, h3, h4, header, img, input, li, nav, p, section, span, text, ul)
-import Html.Attributes exposing (action, alt, class, height, href, id, method, name, novalidate, placeholder, required, src, tabindex, target, type_, value, width)
+import Html.Attributes exposing (action, alt, class, height, href, id, method, name, novalidate, placeholder, required, src, style, tabindex, target, type_, value, width)
 import Html.Events exposing (onClick)
 import Http
 import Json.Decode exposing (Decoder, field, int, list, map2, map3, map4, map5, map6, map7, map8, string)
@@ -684,19 +684,19 @@ viewCrossBorderProcess =
     section [ class "cross-border-process-section" ]
         [ h2 [ class "section-title" ] [ text "服務流程" ]
         , div [ class "flow-chart" ]
-            [ div [ class "flow-node" ]
+            [ div [ class "flow-node", style "z-index" "4" ]
                 [ h2 [] [ text "1. 發佈任務" ]
                 , p [] [ text "專任人員了解您的需求，在平台上發佈任務，並協助尋找合適的Japan Insider。" ]
                 ]
-            , div [ class "flow-node" ]
+            , div [ class "flow-node", style "z-index" "3" ]
                 [ h2 [] [ text "2. 收到報價" ]
                 , p [] [ text "從平台上獲得Japan Insider的報價以及提案，在平台上作比較。" ]
                 ]
-            , div [ class "flow-node" ]
+            , div [ class "flow-node", style "z-index" "2" ]
                 [ h2 [] [ text "3. 線上溝通" ]
                 , p [] [ text "專任人員了解您的需求，在平台上發佈任務，並協助尋找合適的Japan Insider。" ]
                 ]
-            , div [ class "flow-node" ]
+            , div [ class "flow-node", style "z-index" "1" ]
                 [ h2 [] [ text "4. 安全付款" ]
                 , p [] [ text "在您確認交付的任務完成之後，才會將款項撥予Japan Insider (在日海外工作者)。" ]
                 ]
