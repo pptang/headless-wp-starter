@@ -5,8 +5,8 @@ module Main exposing (init, view)
 import Asset
 import Browser
 import Browser.Navigation as Nav
-import Html exposing (Html, a, article, aside, b, br, button, div, em, figure, footer, h1, h2, h3, h4, header, img, li, nav, p, section, span, text, ul)
-import Html.Attributes exposing (alt, class, height, href, id, src, target, width)
+import Html exposing (Html, a, article, aside, b, br, button, div, em, figure, footer, form, h1, h2, h3, h4, header, img, input, li, nav, p, section, span, text, ul)
+import Html.Attributes exposing (action, alt, class, height, href, id, method, name, novalidate, placeholder, required, src, tabindex, target, type_, value, width)
 import Html.Events exposing (onClick)
 import Http
 import Json.Decode exposing (Decoder, field, int, list, map2, map3, map4, map5, map6, map7, map8, string)
@@ -1200,6 +1200,26 @@ viewJpFooter =
         ]
 
 
+viewMailChimpSignupForm : Html Msg
+viewMailChimpSignupForm =
+    div [ id "mc_embed_signup" ]
+        [ form [ action "https://japaninsider.us14.list-manage.com/subscribe/post?u=70f47caaa71d96fe967dfa602&id=a8225094be", method "post", id "mc-embedded-subscribe-form", name "mc-embedded-subscribe-form", class "validate", target "_blank", novalidate True ]
+            [ div [ id "mc_embed_signup_scroll" ]
+                [ input [ type_ "email", value "", name "EMAIL", class "email", id "mce-EMAIL", placeholder "email", required True ]
+                    []
+                , div [ class "input-container" ]
+                    [ input [ type_ "text", name "b_70f47caaa71d96fe967dfa602_a8225094be", value "" ]
+                        []
+                    ]
+                , div [ class "clear" ]
+                    [ input [ type_ "submit", value "Subscribe", name "subscribe", id "mc-embedded-subscribe", class "button" ]
+                        []
+                    ]
+                ]
+            ]
+        ]
+
+
 type Route
     = Home
     | JpHome
@@ -1263,6 +1283,7 @@ view model =
                 , viewCrossBorderBenefit model
                 , viewCrossBorderServiceType
                 , viewCrossBorderProcess
+                , viewMailChimpSignupForm
                 , viewFooter
                 ]
 
