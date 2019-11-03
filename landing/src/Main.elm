@@ -669,6 +669,41 @@ viewBenefitItem { title, imgSrc, description } =
         ]
 
 
+viewCrossBorderServiceType : Html Msg
+viewCrossBorderServiceType =
+    section [ class "cross-border-service-type" ]
+        [ h2 [ class "cross-border-promo-title" ] [ text "善用全世界興起的斜槓趨勢與台灣的海外人才！" ]
+        , p [ class "cross-border-promo-description" ] [ text "文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案" ]
+        , h2 [ class "section-title" ] [ text "服務種類" ]
+        , div [ class "" ] [ text "test" ]
+        ]
+
+
+viewCrossBorderProcess : Html Msg
+viewCrossBorderProcess =
+    section [ class "cross-border-process-section" ]
+        [ h2 [ class "section-title" ] [ text "服務流程" ]
+        , div [ class "flow-chart" ]
+            [ div [ class "flow-node" ]
+                [ h2 [] [ text "1. 發佈任務" ]
+                , p [] [ text "專任人員了解您的需求，在平台上發佈任務，並協助尋找合適的Japan Insider。" ]
+                ]
+            , div [ class "flow-node" ]
+                [ h2 [] [ text "2. 收到報價" ]
+                , p [] [ text "從平台上獲得Japan Insider的報價以及提案，在平台上作比較。" ]
+                ]
+            , div [ class "flow-node" ]
+                [ h2 [] [ text "3. 線上溝通" ]
+                , p [] [ text "專任人員了解您的需求，在平台上發佈任務，並協助尋找合適的Japan Insider。" ]
+                ]
+            , div [ class "flow-node" ]
+                [ h2 [] [ text "4. 安全付款" ]
+                , p [] [ text "在您確認交付的任務完成之後，才會將款項撥予Japan Insider (在日海外工作者)。" ]
+                ]
+            ]
+        ]
+
+
 viewSectionIntroduction : Model -> Html Msg
 viewSectionIntroduction { successStoryList } =
     div [ class "introduction-background-wrapper" ]
@@ -1226,6 +1261,8 @@ view model =
                 , viewCrossBorderTop
                 , viewCrossBorderRegister
                 , viewCrossBorderBenefit model
+                , viewCrossBorderServiceType
+                , viewCrossBorderProcess
                 , viewFooter
                 ]
 
