@@ -30,6 +30,7 @@ type alias Model =
     , mediaList : List String
     , partnerList : List String
     , teamMemberList : List TeamMember
+    , talentList : List Talent
     , selectedTeamMemberIndex : Int
     , articleList : List Article
     , benefitList : List Benefit
@@ -106,6 +107,8 @@ type alias Faq =
 type alias Benefit =
     { imgSrc : String, title : String, description : String }
 
+type alias Talent =
+    { imgSrc : String, field : String, fieldEng : String, name : String, services : List String, intro : String}
 
 serviceCarouselLength =
     2
@@ -138,6 +141,7 @@ type Msg
     | GotFaqList (Result Http.Error (List Faq))
     | GotFundRaiseStats (Result Http.Error FundRaiseStats)
     | GotBenefitList (Result Http.Error (List Benefit))
+    | GotTalentList (Result Http.Error (List Talent))
     | SelectTeamMember Int
     | DotClick Int
     | SwitchTopImage Time.Posix
@@ -156,6 +160,7 @@ init flags url key =
       , mediaList = []
       , partnerList = []
       , teamMemberList = []
+      , talentList = []
       , selectedTeamMemberIndex = -1
       , articleList = []
       , benefitList = []
@@ -211,6 +216,10 @@ init flags url key =
         , Http.get
             { url = "%PUBLIC_URL%/assets/data/benefit.json"
             , expect = Http.expectJson GotBenefitList decodeBenefitList
+            }
+        , Http.get
+            { url = "%PUBLIC_URL%/assets/data/talent.json"
+            , expect = Http.expectJson GotTalentList decodeTalentList
             }
         ]
     )
@@ -330,6 +339,21 @@ benefitDecoder =
         (field "title" string)
         (field "description" string)
 
+decodeTalentList : Decoder (List Talent)
+decodeTalentList =
+    field "data" (list talentDecoder)
+
+talentDecoder : Decoder Talent
+talentDecoder =
+    map6 Talent
+        (field "imgSrc" string)
+        (field "field" string)
+        (field "fieldEng" string)
+        (field "name" string)
+        (field "services" (list string))
+        (field "intro" string)
+        
+        
 
 
 -- UPDATE
@@ -465,6 +489,14 @@ update msg model =
             case result of
                 Ok benefitList ->
                     ( { model | benefitList = benefitList }, Cmd.none )
+
+                Err err ->
+                    ( { model | errorMsg = Just err }, Cmd.none )
+
+        GotTalentList result ->
+            case result of
+                Ok talentList ->
+                    ( { model | talentList = talentList }, Cmd.none )
 
                 Err err ->
                     ( { model | errorMsg = Just err }, Cmd.none )
@@ -674,15 +706,28 @@ viewCrossBorderServiceType =
     section [ class "cross-border-service-type" ]
         [ h2 [ class "cross-border-promo-title" ] [ text "善用全世界興起的斜槓趨勢與台灣的海外人才！" ]
         , p [ class "cross-border-promo-description" ] [ text "文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案" ]
-        , h2 [ class "section-title" ] [ text "服務種類" ]
-        , div [ class "" ] [ text "test" ]
+        , h2 [] [ text "服務種類" ]
+        , div [ class "talent-container" ] [ 
+            div [ class "talent-description"] [
+                h3 [] [text "MARKETING"]
+                ,h2 [] [text "行銷"]
+                , p [] [text "日本線上社群 Facebook, Twitter, Instagram 小編"]
+                , p [] [text "日本線上廣告 Google, Yahoo 操作"]
+                , div [class "talent-category"] [
+                    span [] [text "行銷"]
+                    ,span [] [text "設計"]
+                    ,span [] [text "營運"]
+                ]
+            ]
+            , div [class "talent-intro"][]
+         ]
         ]
 
 
 viewCrossBorderProcess : Html Msg
 viewCrossBorderProcess =
     section [ class "cross-border-process-section" ]
-        [ h2 [ class "section-title" ] [ text "服務流程" ]
+        [ h2 [] [ text "服務流程" ]
         , div [ class "flow-chart" ]
             [ div [ class "flow-node", style "z-index" "4" ]
                 [ h2 [] [ text "1. 發佈任務" ]
@@ -1205,14 +1250,16 @@ viewMailChimpSignupForm =
     div [ id "mc_embed_signup" ]
         [ form [ action "https://japaninsider.us14.list-manage.com/subscribe/post?u=70f47caaa71d96fe967dfa602&id=a8225094be", method "post", id "mc-embedded-subscribe-form", name "mc-embedded-subscribe-form", class "validate", target "_blank", novalidate True ]
             [ div [ id "mc_embed_signup_scroll" ]
-                [ input [ type_ "email", value "", name "EMAIL", class "email", id "mce-EMAIL", placeholder "email", required True ]
-                    []
-                , div [ class "input-container" ]
+                [ 
+                    div [ class "input-container" ]
                     [ input [ type_ "text", name "b_70f47caaa71d96fe967dfa602_a8225094be", value "" ]
                         []
                     ]
-                , div [ class "clear" ]
-                    [ input [ type_ "submit", value "Subscribe", name "subscribe", id "mc-embedded-subscribe", class "button" ]
+                    ,input [ type_ "email", value "", name "EMAIL", class "email", id "mce-EMAIL", placeholder "abc@gmail.com", required True ]
+                    []
+                
+                , div []
+                    [ input [ type_ "submit", value "登錄", name "subscribe", id "mc-embedded-subscribe", class "mc_embed_signup--submit" ]
                         []
                     ]
                 ]
