@@ -31,6 +31,7 @@ type alias Model =
     , partnerList : List String
     , teamMemberList : List TeamMember
     , talentList : List Talent
+    , selectedTalentCategory : Int
     , selectedTeamMemberIndex : Int
     , articleList : List Article
     , benefitList : List Benefit
@@ -109,7 +110,7 @@ type alias Benefit =
 
 
 type alias Talent =
-    { imgSrc : String, field : String, fieldEng : String, name : String, services : List String, intro : String }
+    { id : Int, imgSrc : String, field : String, fieldEng : String, name : String, services : List String, intro : String }
 
 
 serviceCarouselLength =
@@ -127,6 +128,12 @@ linkPath =
 type CarouselBehaviour
     = Next
     | Prev
+
+
+type TalentCategory
+    = Marketing
+    | Design
+    | Operation
 
 
 type Msg
@@ -149,6 +156,7 @@ type Msg
     | SwitchTopImage Time.Posix
     | LinkClicked Browser.UrlRequest
     | UrlChanged Url.Url
+    | SwitchCategory TalentCategory
 
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -163,6 +171,7 @@ init flags url key =
       , partnerList = []
       , teamMemberList = []
       , talentList = []
+      , selectedTalentCategory = 1
       , selectedTeamMemberIndex = -1
       , articleList = []
       , benefitList = []
@@ -349,7 +358,8 @@ decodeTalentList =
 
 talentDecoder : Decoder Talent
 talentDecoder =
-    map6 Talent
+    map7 Talent
+        (field "id" int)
         (field "imgSrc" string)
         (field "field" string)
         (field "fieldEng" string)
@@ -389,6 +399,17 @@ update msg model =
 
                 _ ->
                     ( { model | navBarClassNames = [] }, Cmd.none )
+
+        SwitchCategory category ->
+            case category of
+                Marketing ->
+                    ( { model | selectedTalentCategory = 1 }, Cmd.none )
+
+                Design ->
+                    ( { model | selectedTalentCategory = 2 }, Cmd.none )
+
+                Operation ->
+                    ( { model | selectedTalentCategory = 3 }, Cmd.none )
 
         GotServiceContentList result ->
             case result of
@@ -704,27 +725,46 @@ viewBenefitItem { title, imgSrc, description } =
         ]
 
 
-viewCrossBorderServiceType : Html Msg
-viewCrossBorderServiceType =
+viewCrossBorderServiceType : Model -> Html Msg
+viewCrossBorderServiceType { talentList, selectedTalentCategory } =
     section [ class "cross-border-service-type" ]
         [ h2 [ class "cross-border-promo-title" ] [ text "善用全世界興起的斜槓趨勢與台灣的海外人才！" ]
         , p [ class "cross-border-promo-description" ] [ text "文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案" ]
         , h2 [] [ text "服務種類" ]
-        , div [ class "talent-container" ]
-            [ div [ class "talent-description" ]
-                [ h3 [] [ text "MARKETING" ]
-                , h2 [] [ text "行銷" ]
-                , p [] [ text "日本線上社群 Facebook, Twitter, Instagram 小編" ]
-                , p [] [ text "日本線上廣告 Google, Yahoo 操作" ]
-                , div [ class "talent-category" ]
-                    [ span [] [ text "行銷" ]
-                    , span [] [ text "設計" ]
-                    , span [] [ text "營運" ]
+        , viewTalent (List.head (List.filter (\talent -> talent.id == selectedTalentCategory) talentList))
+        ]
+
+
+viewTalent : Maybe Talent -> Html Msg
+viewTalent maybeTalent =
+    case maybeTalent of
+        Just talent ->
+            let
+                imgSrcPath =
+                    append assetPath talent.imgSrc
+            in
+            div [ class "talent-container" ]
+                [ div [ class "talent-description" ]
+                    ([ h3 [] [ text talent.fieldEng ]
+                     , h2 [] [ text talent.field ]
+                     ]
+                        ++ List.map (\service -> p [] [ text service ]) talent.services
+                        ++ [ div [ class "talent-category" ]
+                                [ button [ onClick (SwitchCategory Marketing) ] [ text "行銷" ]
+                                , button [ onClick (SwitchCategory Design) ] [ text "設計" ]
+                                , button [ onClick (SwitchCategory Operation) ] [ text "營運" ]
+                                ]
+                           ]
+                    )
+                , div [ class "talent-intro" ] [
+                     figure []
+                    [ img [ src imgSrcPath, alt "talent photo", class "talent-img" ] []
                     ]
                 ]
-            , div [ class "talent-intro" ] []
-            ]
-        ]
+                ]
+
+        Nothing ->
+            div [] []
 
 
 viewCrossBorderProcess : Html Msg
@@ -1253,8 +1293,7 @@ viewMailChimpSignupForm =
     div [ id "mc_embed_signup" ]
         [ form [ action "https://japaninsider.us14.list-manage.com/subscribe/post?u=70f47caaa71d96fe967dfa602&id=a8225094be", method "post", id "mc-embedded-subscribe-form", name "mc-embedded-subscribe-form", class "validate", target "_blank", novalidate True ]
             [ div [ id "mc_embed_signup_scroll" ]
-                [ 
-                h2 [class "mc_embed_signup--title"] [text "預先登錄，搶先接收平台上線通知"]
+                [ h2 [ class "mc_embed_signup--title" ] [ text "預先登錄，搶先接收平台上線通知" ]
                 , label [ for "mce-EMAIL", class "mc_embed_signup--label" ] [ text "稱呼 (必填)" ]
                 , input [ class "mc_embed_signup--input-name", type_ "text", name "b_70f47caaa71d96fe967dfa602_a8225094be", placeholder "Jack Wang", value "" ]
                     []
@@ -1331,7 +1370,7 @@ view model =
                 , viewCrossBorderTop
                 , viewCrossBorderRegister
                 , viewCrossBorderBenefit model
-                , viewCrossBorderServiceType
+                , viewCrossBorderServiceType model
                 , viewCrossBorderProcess
                 , viewMailChimpSignupForm
                 , viewFooter

@@ -1,6 +1,7 @@
 {
   "data": [
     {
+      "id": 1,
       "imgSrc": "jiayun.jpg",
       "field": "行銷",
       "fieldEng": "MARKETING",
@@ -9,6 +10,7 @@
       "intro": "Jiayun 日本數位社群(FB, Twitter)帳號的經營、廣告 在日 4 年，日本大手數位廣告代理商 3 年"
     },
     {
+      "id": 2,
       "imgSrc": "rika.jpg",
       "field": "設計",
       "fieldEng": "DESIGN",
@@ -17,6 +19,7 @@
       "intro": "提供日本設計諮詢，符合日本消費者的在地化設計 在日時間: 11年，日本設計事務所6年經驗"
     },
     {
+      "id": 3,
       "imgSrc": "victor.jpg",
       "field": "營運",
       "fieldEng": "OPERATION",
