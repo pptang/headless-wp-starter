@@ -381,6 +381,7 @@ section {
   text-align: left;
   padding-top: 22px;
   padding-left: 27px;
+  position: relative;
 }
 
 .talent-description h3 {
@@ -413,10 +414,28 @@ section {
   line-height: 28px;
   text-align: left;
   color: #FFFFFF;
+  position: absolute;
+  left: 24px;
+  bottom: 32px;
 }
 
-.talent-category span {
+.talent-category button {
   margin-right: 16px;
+  background-color: #D94A3D;
+  color: rgba(255, 255, 255, 0.6);
+  font-style: normal;
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 28px;
+  border: none;
+  cursor: pointer;
+}
+
+.talent-category button.selected,
+.talent-category button:hover,
+.talent-category button:focus {
+  color: #FFFFFF;
+  text-decoration: underline;
 }
 
 .cross-border-promo-title {

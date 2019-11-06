@@ -750,17 +750,47 @@ viewTalent maybeTalent =
                      ]
                         ++ List.map (\service -> p [] [ text service ]) talent.services
                         ++ [ div [ class "talent-category" ]
-                                [ button [ onClick (SwitchCategory Marketing) ] [ text "行銷" ]
-                                , button [ onClick (SwitchCategory Design) ] [ text "設計" ]
-                                , button [ onClick (SwitchCategory Operation) ] [ text "營運" ]
+                                [ button
+                                    [ class
+                                        (if talent.id == 1 then
+                                            "selected"
+
+                                         else
+                                            ""
+                                        )
+                                    , onClick (SwitchCategory Marketing)
+                                    ]
+                                    [ text "行銷" ]
+                                , button
+                                    [ class
+                                        (if talent.id == 2 then
+                                            "selected"
+
+                                         else
+                                            ""
+                                        )
+                                    , onClick (SwitchCategory Design)
+                                    ]
+                                    [ text "設計" ]
+                                , button
+                                    [ class
+                                        (if talent.id == 3 then
+                                            "selected"
+
+                                         else
+                                            ""
+                                        )
+                                    , onClick (SwitchCategory Operation)
+                                    ]
+                                    [ text "營運" ]
                                 ]
                            ]
                     )
-                , div [ class "talent-intro" ] [
-                     figure []
-                    [ img [ src imgSrcPath, alt "talent photo", class "talent-img" ] []
+                , div [ class "talent-intro" ]
+                    [ figure []
+                        [ img [ src imgSrcPath, alt "talent photo", class "talent-img" ] []
+                        ]
                     ]
-                ]
                 ]
 
         Nothing ->
