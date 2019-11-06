@@ -5,8 +5,8 @@ module Main exposing (init, view)
 import Asset
 import Browser
 import Browser.Navigation as Nav
-import Html exposing (Html, a, article, aside, b, br, button, div, em, figure, footer, form, h1, h2, h3, h4, header, img, input, li, nav, p, section, span, text, ul)
-import Html.Attributes exposing (action, alt, class, height, href, id, method, name, novalidate, placeholder, required, src, style, tabindex, target, type_, value, width)
+import Html exposing (Html, a, article, aside, b, br, button, div, em, figure, footer, form, h1, h2, h3, h4, header, img, input, label, li, nav, p, section, span, text, ul)
+import Html.Attributes exposing (action, alt, class, for, height, href, id, method, name, novalidate, placeholder, required, src, style, tabindex, target, type_, value, width)
 import Html.Events exposing (onClick)
 import Http
 import Json.Decode exposing (Decoder, field, int, list, map2, map3, map4, map5, map6, map7, map8, string)
@@ -107,8 +107,10 @@ type alias Faq =
 type alias Benefit =
     { imgSrc : String, title : String, description : String }
 
+
 type alias Talent =
-    { imgSrc : String, field : String, fieldEng : String, name : String, services : List String, intro : String}
+    { imgSrc : String, field : String, fieldEng : String, name : String, services : List String, intro : String }
+
 
 serviceCarouselLength =
     2
@@ -339,9 +341,11 @@ benefitDecoder =
         (field "title" string)
         (field "description" string)
 
+
 decodeTalentList : Decoder (List Talent)
 decodeTalentList =
     field "data" (list talentDecoder)
+
 
 talentDecoder : Decoder Talent
 talentDecoder =
@@ -352,8 +356,7 @@ talentDecoder =
         (field "name" string)
         (field "services" (list string))
         (field "intro" string)
-        
-        
+
 
 
 -- UPDATE
@@ -707,20 +710,20 @@ viewCrossBorderServiceType =
         [ h2 [ class "cross-border-promo-title" ] [ text "善用全世界興起的斜槓趨勢與台灣的海外人才！" ]
         , p [ class "cross-border-promo-description" ] [ text "文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案" ]
         , h2 [] [ text "服務種類" ]
-        , div [ class "talent-container" ] [ 
-            div [ class "talent-description"] [
-                h3 [] [text "MARKETING"]
-                ,h2 [] [text "行銷"]
-                , p [] [text "日本線上社群 Facebook, Twitter, Instagram 小編"]
-                , p [] [text "日本線上廣告 Google, Yahoo 操作"]
-                , div [class "talent-category"] [
-                    span [] [text "行銷"]
-                    ,span [] [text "設計"]
-                    ,span [] [text "營運"]
+        , div [ class "talent-container" ]
+            [ div [ class "talent-description" ]
+                [ h3 [] [ text "MARKETING" ]
+                , h2 [] [ text "行銷" ]
+                , p [] [ text "日本線上社群 Facebook, Twitter, Instagram 小編" ]
+                , p [] [ text "日本線上廣告 Google, Yahoo 操作" ]
+                , div [ class "talent-category" ]
+                    [ span [] [ text "行銷" ]
+                    , span [] [ text "設計" ]
+                    , span [] [ text "營運" ]
+                    ]
                 ]
+            , div [ class "talent-intro" ] []
             ]
-            , div [class "talent-intro"][]
-         ]
         ]
 
 
@@ -1251,15 +1254,15 @@ viewMailChimpSignupForm =
         [ form [ action "https://japaninsider.us14.list-manage.com/subscribe/post?u=70f47caaa71d96fe967dfa602&id=a8225094be", method "post", id "mc-embedded-subscribe-form", name "mc-embedded-subscribe-form", class "validate", target "_blank", novalidate True ]
             [ div [ id "mc_embed_signup_scroll" ]
                 [ 
-                    div [ class "input-container" ]
-                    [ input [ type_ "text", name "b_70f47caaa71d96fe967dfa602_a8225094be", value "" ]
-                        []
-                    ]
-                    ,input [ type_ "email", value "", name "EMAIL", class "email", id "mce-EMAIL", placeholder "abc@gmail.com", required True ]
+                h2 [class "mc_embed_signup--title"] [text "預先登錄，搶先接收平台上線通知"]
+                , label [ for "mce-EMAIL", class "mc_embed_signup--label" ] [ text "稱呼 (必填)" ]
+                , input [ class "mc_embed_signup--input-name", type_ "text", name "b_70f47caaa71d96fe967dfa602_a8225094be", placeholder "Jack Wang", value "" ]
                     []
-                
-                , div []
-                    [ input [ type_ "submit", value "登錄", name "subscribe", id "mc-embedded-subscribe", class "mc_embed_signup--submit" ]
+                , label [ for "mce-EMAIL", class "mc_embed_signup--label" ] [ text "Email" ]
+                , div [ class "mc_embed_signup--input-container" ]
+                    [ input [ type_ "email", value "", name "EMAIL", class "mc_embed_signup--input-email", id "mce-EMAIL", placeholder "abc@gmail.com", required True ]
+                        []
+                    , input [ type_ "submit", value "登錄", name "subscribe", id "mc-embedded-subscribe", class "mc_embed_signup--submit" ]
                         []
                     ]
                 ]
