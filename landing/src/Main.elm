@@ -23,6 +23,7 @@ import Url.Parser exposing (Parser, map, oneOf, parse, s, top)
 type alias Model =
     { navBarClassNames : List String
     , serviceContentList : List ServiceContent
+    , serviceCategoryList : List ServiceCategory
     , jpServiceContentList : List ServiceContent
     , serviceDetailList : List ServiceDetail
     , serviceIndex : Int
@@ -42,6 +43,13 @@ type alias Model =
     , topIndex : Int
     , url : Url.Url
     , key : Nav.Key
+    }
+
+
+type alias ServiceCategory =
+    { imgSrc : String
+    , title : String
+    , titleEng : String
     }
 
 
@@ -140,6 +148,7 @@ type Msg
     = TOGGLE
     | GotServiceContentList (Result Http.Error (List ServiceContent))
     | GotJpServiceContentList (Result Http.Error (List ServiceContent))
+    | GotServiceCategoryList (Result Http.Error (List ServiceCategory))
     | GotServiceDetailList (Result Http.Error (List ServiceDetail))
     | Carousel CarouselUseCase CarouselBehaviour
     | GotMediaList (Result Http.Error (List String))
@@ -163,6 +172,7 @@ init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
     ( { navBarClassNames = []
       , serviceContentList = []
+      , serviceCategoryList = []
       , jpServiceContentList = []
       , serviceDetailList = []
       , serviceIndex = 0
@@ -191,6 +201,10 @@ init flags url key =
         , Http.get
             { url = "%PUBLIC_URL%/assets/data/jp_service_content.json"
             , expect = Http.expectJson GotJpServiceContentList decodeServiceContentList
+            }
+        , Http.get
+            { url = "%PUBLIC_URL%/assets/data/service_category.json"
+            , expect = Http.expectJson GotServiceCategoryList decodeServiceCategoryList
             }
         , Http.get
             { url = "%PUBLIC_URL%/assets/data/service_detail.json"
@@ -252,6 +266,19 @@ serviceContentDecoder =
         (field "imgAlt" string)
         (field "title" string)
         (field "description" string)
+
+
+decodeServiceCategoryList : Decoder (List ServiceCategory)
+decodeServiceCategoryList =
+    field "data" (list serviceCategoryDecoder)
+
+
+serviceCategoryDecoder : Decoder ServiceCategory
+serviceCategoryDecoder =
+    map3 ServiceCategory
+        (field "imgSrc" string)
+        (field "title" string)
+        (field "titleEng" string)
 
 
 decodeServiceDetailList : Decoder (List ServiceDetail)
@@ -423,6 +450,14 @@ update msg model =
             case result of
                 Ok jpServiceContentList ->
                     ( { model | jpServiceContentList = jpServiceContentList }, Cmd.none )
+
+                Err _ ->
+                    ( model, Cmd.none )
+
+        GotServiceCategoryList result ->
+            case result of
+                Ok serviceCategoryList ->
+                    ( { model | serviceCategoryList = serviceCategoryList }, Cmd.none )
 
                 Err _ ->
                     ( model, Cmd.none )
@@ -702,7 +737,7 @@ viewCrossBorderTop =
 
 viewCrossBorderRegister : Html Msg
 viewCrossBorderRegister =
-    div [ class "cross-border-register" ] [ p [] [ text "預先登錄，搶先接收平台上線通知" ], a [ class "consult-btn", href "https://japaninsider.typeform.com/to/yvsVAD", target "_blank" ] [ text "登錄" ] ]
+    div [ class "cross-border-register" ] [ p [] [ text "預先登錄，搶先接收平台上線通知" ], a [ class "consult-btn", href "/cross-border-sourcing#mc_embed_signup" ] [ text "登錄" ] ]
 
 
 viewCrossBorderBenefit : Model -> Html Msg
@@ -719,8 +754,9 @@ viewBenefitItem { title, imgSrc, description } =
             append assetPath imgSrc
     in
     article [ class "benefit-item" ]
-        [ img [ class "benefit-item-image", src imgSrcPath, alt title ] []
-        , h2 [ class "benefit-item-title" ] [ text title ]
+        [ 
+            -- img [ class "benefit-item-image", src imgSrcPath, alt title ] []
+         h2 [ class "benefit-item-title" ] [ text title ]
         , p [ class "benefit-item-description" ] [ text description ]
         ]
 
@@ -728,8 +764,8 @@ viewBenefitItem { title, imgSrc, description } =
 viewCrossBorderServiceType : Model -> Html Msg
 viewCrossBorderServiceType { talentList, selectedTalentCategory } =
     section [ class "cross-border-service-type" ]
-        [ h2 [ class "cross-border-promo-title" ] [ text "善用全世界興起的斜槓趨勢與台灣的海外人才！" ]
-        , p [ class "cross-border-promo-description" ] [ text "文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案" ]
+        [ h2 [ class "cross-border-promo-title" ] [ text "日本6萬名的台灣海漂族，協助你快速進入拓展日本市場" ]
+        , p [ class "cross-border-promo-description" ] [ text "在日本已經超過6萬名的台灣人才，我們都具有多重語言、多重商業文化的背景; 希望透過自己的跨境背景，參與協助海外團隊進入日本市場。" ]
         , h2 [] [ text "服務種類" ]
         , viewTalent (List.head (List.filter (\talent -> talent.id == selectedTalentCategory) talentList))
         ]
@@ -790,11 +826,34 @@ viewTalent maybeTalent =
                     [ figure []
                         [ img [ src imgSrcPath, alt "talent photo", class "talent-img" ] []
                         ]
-                    ]
+                      , div [ class "talent-intro-float-wrapper"] [
+                          h3 [] [text talent.name]
+                          , p [] [text talent.intro]
+                      ]
+                ]
                 ]
 
         Nothing ->
             div [] []
+
+
+viewCrossBorderServiceCategory : Model -> Html Msg
+viewCrossBorderServiceCategory { serviceCategoryList } =
+    section [ class "cross-border-service-category" ]
+        (List.map viewServiceCategory (List.take 8 serviceCategoryList))
+
+
+viewServiceCategory : ServiceCategory -> Html Msg
+viewServiceCategory { imgSrc, title, titleEng } =
+    let
+        imgSrcPath =
+            append assetPath imgSrc
+    in
+    article [ class "service-category-item" ]
+        [ img [ src imgSrcPath, alt title ] []
+        , h2 [] [ text title ]
+        , p [] [ text titleEng ]
+        ]
 
 
 viewCrossBorderProcess : Html Msg
@@ -1401,6 +1460,7 @@ view model =
                 , viewCrossBorderRegister
                 , viewCrossBorderBenefit model
                 , viewCrossBorderServiceType model
+                , viewCrossBorderServiceCategory model
                 , viewCrossBorderProcess
                 , viewMailChimpSignupForm
                 , viewFooter
