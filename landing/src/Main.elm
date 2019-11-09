@@ -743,7 +743,11 @@ viewCrossBorderRegister =
 viewCrossBorderBenefit : Model -> Html Msg
 viewCrossBorderBenefit { benefitList } =
     section [ class "cross-border-benefit-section" ]
-        [ div [ class "cross-border-benefit-content" ] [ h2 [] [ text "採用「跨境外包」進入日本市場的好處" ], div [ class "cross-border-benefit-list" ] (List.map viewBenefitItem (List.take 3 benefitList)) ]
+        [ div [ class "cross-border-benefit-content" ]
+            [ h2 [] [ text "採用「跨境外包」進入日本市場的好處" ]
+            , div [ class "cross-border-benefit-intro" ] [ p [] [ text "群眾募資在日本越來越普及，過去幾年的募資金額都有大幅成長，也漸漸成為海外新創進日本市場的前哨站。" ], p [] [ text "日本群眾募資的特色之一是平台眾多，每個平台有各自的特性及優點。每個團隊目標皆不同，必須要有相應策略指南，才能在市場的開拓旅程中勝出！" ] ]
+            , div [ class "cross-border-benefit-list" ] (List.map viewBenefitItem (List.take 3 benefitList))
+            ]
         ]
 
 
@@ -754,9 +758,8 @@ viewBenefitItem { title, imgSrc, description } =
             append assetPath imgSrc
     in
     article [ class "benefit-item" ]
-        [ 
-            -- img [ class "benefit-item-image", src imgSrcPath, alt title ] []
-         h2 [ class "benefit-item-title" ] [ text title ]
+        [ -- img [ class "benefit-item-image", src imgSrcPath, alt title ] []
+          h2 [ class "benefit-item-title" ] [ text title ]
         , p [ class "benefit-item-description" ] [ text description ]
         ]
 
@@ -781,56 +784,54 @@ viewTalent maybeTalent =
             in
             div [ class "talent-container" ]
                 [ div [ class "talent-description" ]
-                    ([ h3 [] [ text talent.fieldEng ]
-                     , h2 [] [ text talent.field ]
-                     ]
-                        ++ List.map (\service -> p [] [ text service ]) talent.services
-                        ++ [ div [ class "talent-category" ]
-                                [ button
-                                    [ class
-                                        (if talent.id == 1 then
-                                            "selected"
+                    [ h3 [] [ text talent.fieldEng ]
+                    , h2 [] [ text talent.field ]
+                    , div [ class "talent-service-wrapper" ] (List.map (\service -> p [] [ text service ]) talent.services)
+                    , div [ class "talent-category" ]
+                        [ button
+                            [ class
+                                (if talent.id == 1 then
+                                    "selected"
 
-                                         else
-                                            ""
-                                        )
-                                    , onClick (SwitchCategory Marketing)
-                                    ]
-                                    [ text "行銷" ]
-                                , button
-                                    [ class
-                                        (if talent.id == 2 then
-                                            "selected"
+                                 else
+                                    ""
+                                )
+                            , onClick (SwitchCategory Marketing)
+                            ]
+                            [ text "行銷" ]
+                        , button
+                            [ class
+                                (if talent.id == 2 then
+                                    "selected"
 
-                                         else
-                                            ""
-                                        )
-                                    , onClick (SwitchCategory Design)
-                                    ]
-                                    [ text "設計" ]
-                                , button
-                                    [ class
-                                        (if talent.id == 3 then
-                                            "selected"
+                                 else
+                                    ""
+                                )
+                            , onClick (SwitchCategory Design)
+                            ]
+                            [ text "設計" ]
+                        , button
+                            [ class
+                                (if talent.id == 3 then
+                                    "selected"
 
-                                         else
-                                            ""
-                                        )
-                                    , onClick (SwitchCategory Operation)
-                                    ]
-                                    [ text "營運" ]
-                                ]
-                           ]
-                    )
+                                 else
+                                    ""
+                                )
+                            , onClick (SwitchCategory Operation)
+                            ]
+                            [ text "營運" ]
+                        ]
+                    ]
                 , div [ class "talent-intro" ]
                     [ figure []
                         [ img [ src imgSrcPath, alt "talent photo", class "talent-img" ] []
                         ]
-                      , div [ class "talent-intro-float-wrapper"] [
-                          h3 [] [text talent.name]
-                          , p [] [text talent.intro]
-                      ]
-                ]
+                    , div [ class "talent-intro-float-wrapper" ]
+                        [ h3 [] [ text talent.name ]
+                        , p [] [ text talent.intro ]
+                        ]
+                    ]
                 ]
 
         Nothing ->
