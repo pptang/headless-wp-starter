@@ -14,10 +14,12 @@ if (!isWordpressUrlDefined) {
   );
   process.exit(1);
 }
-const envKeys = Object.keys(env).reduce((acc, current) => {
-  acc[`process.env.${current}`] = JSON.stringify(env[current]);
-  return acc;
-}, {});
+const envKeys = env
+  ? Object.keys(env).reduce((acc, current) => {
+      acc[`process.env.${current}`] = JSON.stringify(env[current]);
+      return acc;
+    }, {})
+  : {};
 
 module.exports = {
   webpack: config => {
