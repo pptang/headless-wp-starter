@@ -72,7 +72,7 @@ jobs:
 
       - run:
           name: Build application
-          command: sudo yarn build
+          command: sudo WORDPRESS_URL=https://dummy-wordpress.com yarn build
 
 workflows:
   version: 2
