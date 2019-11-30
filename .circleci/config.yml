@@ -74,6 +74,17 @@ jobs:
           name: Build application
           command: sudo WORDPRESS_URL=https://dummy-wordpress.com yarn build
 
+  deploy-frontend:
+    executor: frontend-executor
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - 'a5:7a:8f:d8:2e:2f:09:40:89:b8:89:ce:58:f4:98:f7'
+
+      - run:
+          name: Pull latest code and restart frontend
+          command: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@52.198.50.117 "cd /home/ubuntu/app && git fetch origin && git reset --hard origin/master && docker-compose restart frontend"
+
 workflows:
   version: 2
   build-and-deploy:
@@ -86,9 +97,9 @@ workflows:
           filters:
             branches:
               only: master
-      # - deploy-frontend:
-      #     requires:
-      #       - build-frontend
-      #     filters:
-      #       branches:
-      #         only: master
+      - deploy-frontend:
+          requires:
+            - build-frontend
+          filters:
+            branches:
+              only: master
