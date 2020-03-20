@@ -25,11 +25,13 @@ jobs:
           path: ~/repo
 
       - run:
-          name: Install create-elm-app
+          name: Install dependencies
           # Set unsafe-perm to true to suppress the UID/GID switching when running package scripts. If set explicitly to false, then installing as a non-root user will fail.
-          command: sudo npm install -g create-elm-app@4.0.0 --unsafe-perm=true
+          command: sudo yarn install
 
-      - run: elm-app build
+      - run: 
+          name: Build production application
+          command: sudo yarn build:prod
 
   deploy-landing:
     executor: landing-page-executor
