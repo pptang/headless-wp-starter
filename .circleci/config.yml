@@ -43,7 +43,7 @@ jobs:
 
       - run:
           name: Pull latest code and restart landing
-          command: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@52.198.50.117 "cd /home/node/app && git fetch origin && git reset --hard origin/master && docker-compose restart landing"
+          command: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@52.198.50.117 "cd /home/ubuntu/app && git fetch origin && git reset --hard origin/master && docker-compose restart landing"
 
   build-frontend:
     executor: frontend-executor
