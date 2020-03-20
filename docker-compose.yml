@@ -41,8 +41,6 @@ services:
             - ./certbot/conf:/etc/letsencrypt
             # This is for validation challenges.
             - ./certbot/www:/var/www/certbot
-            - ./localhost.crt:/etc/ssl/certs/localhost.crt
-            - ./localhost.key:/etc/ssl/private/localhost.key
         ports:
             - '80:80'
             - '443:443'

@@ -15,16 +15,30 @@ Under `landing` folder, the whole application is built with [create-elm-app](htt
 
 ### Development
 
-```
-elm-app start
-```
+- Whole website
 
-Open `http://localhost:3000/` and you can develop with hot-reload.
+  1. In order to enable **https** locally, we need to generate self-signed certificates by running this script locally:
+     ```bash
+     ❯ ./create-local-ssl-cert.sh
+     ```
+  2. Then, launch the whole application by running:
+     ```bash
+     ❯ docker-compose up -d
+     ```
+     Open `https://localhost/` and you can see landing page.
+     Open `http://localhost:3000/` and you can see frontend page.
+
+- Landing Page only
+
+  ```bash
+  ❯ elm-app start
+  ```
+  Open `http://localhost` and you can develop with hot-reload.
 
 ### Production Build
 
-```
-elm-app build
+```bash
+❯ elm-app build
 ```
 
 Bundle and optimize the app and put it inside `build` folder.
