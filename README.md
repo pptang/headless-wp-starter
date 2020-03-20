@@ -17,11 +17,12 @@ Under `landing` folder, the whole application is built with [create-elm-app](htt
 
 - Whole website
 
-  1. In order to enable **https** locally, we need to generate self-signed certificates by running this script locally:
+  1. In order to enable **https** locally, we need to generate self-signed certificates by running this script locally (**ref**: https://letsencrypt.org/docs/certificates-for-localhost/):
      ```bash
      ❯ ./create-local-ssl-cert.sh
      ```
-  2. Then, launch the whole application by running:
+  2. Drag those certificates to your keychain and toggle `Trust All` option (**ref**: https://www.humankode.com/asp-net-core/develop-locally-with-https-self-signed-certificates-and-asp-net-core).
+  3. Then, launch the whole application by running:
      ```bash
      ❯ docker-compose up -d
      ```
